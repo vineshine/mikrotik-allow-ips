@@ -1,16 +1,20 @@
 {
-  "generated_at": "2026-07-10_12:04:21_Beijing",
+  "generated_at": "2026-07-10_15:25:49_Beijing",
   "timezone": "Asia/Shanghai",
   "regions": {
     "500000": "Chongqing",
     "510000": "Sichuan"
   },
   "source_templates": [
-    "https://cdn.jsdelivr.net/gh/metowolf/iplist@master/data/cncity/{code}.txt",
+    "https://raw.githubusercontent.com/metowolf/iplist/master/data/cncity/{code}.txt",
     "https://metowolf.github.io/iplist/data/cncity/{code}.txt",
-    "https://raw.githubusercontent.com/metowolf/iplist/master/data/cncity/{code}.txt"
+    "https://cdn.jsdelivr.net/gh/metowolf/iplist@master/data/cncity/{code}.txt"
   ],
+  "source_counts": {
+    "500000": 295,
+    "510000": 535
+  },
   "network_count_after_collapse": 792,
-  "output_file": "dist/allow_ips.rsc",
-  "sha256": "c86c0445cbe0a04997c762f79e177d0345eb22997554b5d2d568861c86a5f3cd"
+  "network_sha256": "7fca472212f9211618e53bad5be7ca5c5b0cb66a9118328a6e66610d06bb52d1",
+  "output_file": "dist/allow_ips.rsc"
 }
