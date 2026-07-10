@@ -29,9 +29,7 @@ MIN_NETWORKS_AFTER_COLLAPSE = 10
 def fetch_text(url: str) -> str:
     req = urllib.request.Request(
         url,
-        headers={
-            "User-Agent": "mikrotik-allow-ips-generator/1.0"
-        },
+        headers={"User-Agent": "mikrotik-allow-ips-generator/1.0"},
     )
 
     with urllib.request.urlopen(req, timeout=45) as resp:
@@ -51,7 +49,6 @@ def parse_ipv4_networks(text: str, region_code: str) -> list[ipaddress.IPv4Netwo
         if line.startswith("#"):
             continue
 
-        # 防止来源文件行尾出现注释或额外字段，只取第一段
         line = line.split()[0].strip()
 
         try:
@@ -109,8 +106,6 @@ def build_routeros_rsc(networks: list[ipaddress.IPv4Network], generated_at: str)
             f'address={net} comment="auto cncity {region_text} {generated_at}"'
         )
 
-    # 二次保护：
-    # 先导入 allow_ips_new，如果数量异常过少，则拒绝替换旧 allow_ips。
     lines.append(':local allowIpsNewCount [/ip firewall address-list print count-only where list=allow_ips_new]')
     lines.append(
         f':if ($allowIpsNewCount < {MIN_NETWORKS_AFTER_COLLAPSE}) do={{ '
@@ -120,8 +115,6 @@ def build_routeros_rsc(networks: list[ipaddress.IPv4Network], generated_at: str)
         f'}}'
     )
 
-    # 只有 allow_ips_new 完整导入后，才删除旧 allow_ips 并切换。
-    # 这可以避免下载到异常文件时把旧白名单清空。
     lines.append('/ip firewall address-list remove [find list=allow_ips]')
     lines.append('/ip firewall address-list set [find list=allow_ips_new] list=allow_ips')
 
