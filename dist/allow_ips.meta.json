@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10_10:57:04_Beijing",
+  "generated_at": "2026-07-10_12:04:21_Beijing",
   "timezone": "Asia/Shanghai",
   "regions": {
     "500000": "Chongqing",
@@ -12,5 +12,5 @@
   ],
   "network_count_after_collapse": 792,
   "output_file": "dist/allow_ips.rsc",
-  "sha256": "667b93fa4322e4b9782fd960cdd427d838fceb73d3f0911b488c741bfd4ce2c2"
+  "sha256": "c86c0445cbe0a04997c762f79e177d0345eb22997554b5d2d568861c86a5f3cd"
 }
