@@ -3,8 +3,8 @@ name: Update RouterOS allow_ips
 on:
   workflow_dispatch:
   schedule:
-    # GitHub Actions 默认使用 UTC。
-    # 对应北京时间 03:17、09:17、15:17、21:17。
+    # GitHub Actions 的 schedule 使用 UTC。
+    # 这里对应北京时间 03:17、09:17、15:17、21:17。
     - cron: "17 19,1,7,13 * * *"
 
 permissions:
