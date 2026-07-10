@@ -1,0 +1,73 @@
+name: Update RouterOS allow_ips
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub Actions 默认使用 UTC。
+    # 下面对应北京时间 03:17、09:17、15:17、21:17。
+    - cron: "17 19,1,7,13 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-routeros-allow-ips
+  cancel-in-progress: true
+
+jobs:
+  update-allow-ips:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate allow_ips.rsc
+        run: python generate_allow_ips.py
+
+      - name: Show generated file info
+        run: |
+          ls -lh dist/allow_ips.rsc dist/allow_ips.meta.json
+          echo "----- allow_ips.rsc head -----"
+          head -n 5 dist/allow_ips.rsc
+          echo "----- allow_ips.rsc tail -----"
+          tail -n 8 dist/allow_ips.rsc
+          echo "----- allow_ips.meta.json -----"
+          cat dist/allow_ips.meta.json
+
+      - name: Commit generated files if changed
+        id: commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+          git add dist/allow_ips.rsc dist/allow_ips.meta.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Update allow_ips.rsc"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Purge jsDelivr cache
+        if: steps.commit.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          JSDELIVR_URL="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.rsc"
+          PURGE_URL="https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.rsc"
+
+          echo "Purge URL: ${PURGE_URL}"
+          curl -fsSL "${PURGE_URL}" || true
+
+          echo "Verify jsDelivr URL: ${JSDELIVR_URL}"
+          sleep 10
+          curl -fsSL "${JSDELIVR_URL}" -o /tmp/allow_ips.rsc || true
+          ls -lh /tmp/allow_ips.rsc || true
+          head -n 3 /tmp/allow_ips.rsc || true
