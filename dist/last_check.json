@@ -1,7 +1,7 @@
 {
-  "checked_at": "2026-07-10_15:25:49_Beijing",
+  "checked_at": "2026-07-11_04:44:39_Beijing",
   "timezone": "Asia/Shanghai",
-  "cidr_changed": true,
+  "cidr_changed": false,
   "source_counts": {
     "500000": 295,
     "510000": 535
