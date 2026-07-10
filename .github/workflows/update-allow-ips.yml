@@ -30,6 +30,20 @@ jobs:
       - name: Generate allow_ips.rsc
         run: python generate_allow_ips.py
 
+      - name: Read generated metadata
+        id: meta
+        run: |
+          GENERATED_AT=$(python - <<'PY'
+          import json
+          with open("dist/allow_ips.meta.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+          print(data["generated_at"])
+          PY
+          )
+
+          echo "generated_at=${GENERATED_AT}" >> "$GITHUB_OUTPUT"
+          echo "Generated at: ${GENERATED_AT}"
+
       - name: Show generated file info
         run: |
           ls -lh dist/allow_ips.rsc dist/allow_ips.meta.json
@@ -58,16 +72,40 @@ jobs:
           fi
 
       - name: Purge jsDelivr cache
-        if: steps.commit.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          JSDELIVR_URL="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.rsc"
-          PURGE_URL="https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.rsc"
+          RSC_PURGE_URL="https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.rsc"
+          META_PURGE_URL="https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.meta.json"
 
-          echo "Purge URL: ${PURGE_URL}"
-          curl -fsSL "${PURGE_URL}" || true
+          echo "Purge RSC: ${RSC_PURGE_URL}"
+          curl -fsSL "${RSC_PURGE_URL}"
 
-          echo "Verify jsDelivr URL: ${JSDELIVR_URL}"
-          sleep 10
-          curl -fsSL "${JSDELIVR_URL}" -o /tmp/allow_ips.rsc || true
-          ls -lh /tmp/allow_ips.rsc || true
-          head -n 3 /tmp/allow_ips.rsc || true
+          echo "Purge META: ${META_PURGE_URL}"
+          curl -fsSL "${META_PURGE_URL}"
+
+      - name: Verify jsDelivr is fresh
+        run: |
+          JSDELIVR_RSC_URL="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/allow_ips.rsc"
+          EXPECTED_GENERATED_AT="${{ steps.meta.outputs.generated_at }}"
+
+          echo "Expected generated_at: ${EXPECTED_GENERATED_AT}"
+          echo "Verify URL: ${JSDELIVR_RSC_URL}"
+
+          for i in $(seq 1 24); do
+            echo "Check attempt ${i}/24"
+
+            curl -fsSL "${JSDELIVR_RSC_URL}" -o /tmp/allow_ips.rsc
+
+            echo "Current first line:"
+            head -n 1 /tmp/allow_ips.rsc
+
+            if grep -q "${EXPECTED_GENERATED_AT}" /tmp/allow_ips.rsc; then
+              echo "jsDelivr cache is fresh."
+              exit 0
+            fi
+
+            echo "jsDelivr is still stale, wait 10s..."
+            sleep 10
+          done
+
+          echo "ERROR: jsDelivr is still stale after 240 seconds."
+          exit 1
