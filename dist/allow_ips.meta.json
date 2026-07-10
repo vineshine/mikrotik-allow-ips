@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-07-10_01:56:59_UTC",
+  "regions": {
+    "500000": "Chongqing",
+    "510000": "Sichuan"
+  },
+  "source_templates": [
+    "https://cdn.jsdelivr.net/gh/metowolf/iplist@master/data/cncity/{code}.txt",
+    "https://metowolf.github.io/iplist/data/cncity/{code}.txt",
+    "https://raw.githubusercontent.com/metowolf/iplist/master/data/cncity/{code}.txt"
+  ],
+  "network_count_after_collapse": 792,
+  "output_file": "dist/allow_ips.rsc",
+  "sha256": "8637460e373d831e8bb9ad4648e24d916ee160d6c44dd27fc73d78dea1003948"
+}
