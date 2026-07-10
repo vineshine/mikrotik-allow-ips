@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # GitHub Actions 默认使用 UTC。
-    # 下面对应北京时间 03:17、09:17、15:17、21:17。
+    # 对应北京时间 03:17、09:17、15:17、21:17。
     - cron: "17 19,1,7,13 * * *"
 
 permissions:
@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
