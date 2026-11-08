@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10_15:25:49_Beijing",
+  "generated_at": "2026-11-09_06:55:19_Beijing",
   "timezone": "Asia/Shanghai",
   "regions": {
     "500000": "Chongqing",
@@ -11,10 +11,10 @@
     "https://cdn.jsdelivr.net/gh/metowolf/iplist@master/data/cncity/{code}.txt"
   ],
   "source_counts": {
-    "500000": 295,
-    "510000": 535
+    "500000": 296,
+    "510000": 536
   },
-  "network_count_after_collapse": 792,
-  "network_sha256": "7fca472212f9211618e53bad5be7ca5c5b0cb66a9118328a6e66610d06bb52d1",
+  "network_count_after_collapse": 794,
+  "network_sha256": "fb701850e770f77daada1e06f26fc2273764b4c713a7bc210c60d24520b7a234",
   "output_file": "dist/allow_ips.rsc"
 }
